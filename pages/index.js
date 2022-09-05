@@ -5,6 +5,7 @@ import NavBar from "../components/NavBar";
 import Card from "../UI/Card";
 
 import styles from "../styles/Home.module.css";
+import ShowBalance from "../components/ShowBalance";
 
 const Home = () => {
 	return (
@@ -16,6 +17,7 @@ const Home = () => {
 				<div>
 					<NavBar />
 				</div>
+				<ShowBalance />
 				<Card>
 					<div className={styles["connect-wallet"]}>
 						<h2>Connect Your Wallet</h2>
