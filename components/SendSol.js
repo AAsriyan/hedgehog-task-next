@@ -27,6 +27,7 @@ const SendSol = (props) => {
 		});
 
 		transaction.add(sendSolInstruction);
+		// using set timeout just to make sure the transaction went out before updating the balance.
 		sendTransaction(transaction, connection)
 			.then((sig) => {
 				setSig(sig);

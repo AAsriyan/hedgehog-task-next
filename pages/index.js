@@ -11,6 +11,7 @@ import styles from "../styles/Home.module.css";
 import ShowBalance from "../components/ShowBalance";
 import SendAndReceive from "../components/SendAndReceive";
 import SendSol from "../components/SendSol";
+import CreateMint from "../components/CreateMint";
 
 const Home = () => {
 	const [isSending, setIsSending] = useState(false);
@@ -58,6 +59,7 @@ const Home = () => {
 			<div>
 				<NavBar />
 			</div>
+			<CreateMint />
 			<ShowBalance balance={balance} />
 			<SendAndReceive onSend={showSendHandler} />
 			{isSending && (
