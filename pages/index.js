@@ -12,6 +12,7 @@ import ShowBalance from "../components/ShowBalance";
 import SendAndReceive from "../components/SendAndReceive";
 import SendSol from "../components/SendSol";
 import CreateMint from "../components/CreateMint";
+import CreateTokenAccount from "../components/CreateTokenAccount";
 
 const Home = () => {
 	const [isSending, setIsSending] = useState(false);
@@ -60,6 +61,7 @@ const Home = () => {
 				<NavBar />
 			</div>
 			<CreateMint />
+			<CreateTokenAccount />
 			<ShowBalance balance={balance} />
 			<SendAndReceive onSend={showSendHandler} />
 			{isSending && (

@@ -48,6 +48,7 @@ const CreateMint = () => {
 		}).then((sig) => {
 			setSig(sig);
 			console.log(sig);
+			console.log(`this is the mint: ${mint.publicKey.toBase58()}`);
 			setMint(mint.publicKey.toString());
 		});
 	};

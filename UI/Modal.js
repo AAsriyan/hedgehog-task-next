@@ -17,6 +17,7 @@ const ModalOverlay = (props) => {
 };
 
 const Modal = (props) => {
+	// need to get the document so I can use a Portal for the modal and backdrop components but it is undefined on initial render
 	const [_document, set_document] = useState(null);
 
 	useEffect(() => {
