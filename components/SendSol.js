@@ -10,11 +10,10 @@ const SendSol = (props) => {
 	const { publicKey, sendTransaction } = useWallet();
 	console.log(sig, "this is the sig");
 
-	const sendToken = (e) => {
+	const sendToken = async (e) => {
 		e.preventDefault();
 		if (!connection || !publicKey) {
 			// remember to put in better user feedback here
-			console.log("not connected or have public key in send sol");
 			return;
 		}
 		const transaction = new web3.Transaction();
@@ -28,17 +27,13 @@ const SendSol = (props) => {
 
 		transaction.add(sendSolInstruction);
 		// using set timeout just to make sure the transaction went out before updating the balance.
-		sendTransaction(transaction, connection)
-			.then((sig) => {
-				setSig(sig);
-				setTimeout(() => {
-					props.refresh();
-					console.log("inside set timeout");
-				}, 2000);
-			})
-			.then(() => {
-				console.log(sig);
-			});
+		const signature = await sendTransaction(transaction, connection);
+
+		setTimeout(() => {
+			setSig(signature);
+			props.refresh();
+			//props.onClose();
+		}, 1000);
 	};
 
 	return (

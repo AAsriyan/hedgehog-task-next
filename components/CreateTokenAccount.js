@@ -9,8 +9,9 @@ import {
 	ASSOCIATED_TOKEN_PROGRAM_ID,
 	createAssociatedTokenAccountInstruction
 } from "@solana/spl-token";
+import Modal from "../UI/Modal";
 
-const CreateTokenAccount = () => {
+const CreateTokenAccount = (props) => {
 	const [sig, setSig] = useState("");
 	const [tokenAccount, setTokenAccount] = useState("");
 
@@ -58,19 +59,27 @@ const CreateTokenAccount = () => {
 	};
 
 	return (
-		<form onSubmit={createTokenAccountHandler}>
-			<label htmlFor="mint">Token Mint:</label>
-			<input id="mint" type="text" placeholder="Enter Token Mint" />
-			<label htmlFor="owner">Token Account Owner:</label>
-			<input
-				id="owner"
-				type="text"
-				placeholder="Enter the PublicKey of the Token Account Owner"
-				required
-			/>
-			<button type="submit">Create Token Account</button>
-			<p>{sigAndTokenAccount()}</p>
-		</form>
+		<Modal onClose={props.onClose}>
+			<form onSubmit={createTokenAccountHandler}>
+				<div>
+					<label htmlFor="mint">Token Mint:</label>
+					<input id="mint" type="text" placeholder="Enter Token Mint" />
+				</div>
+				<div>
+					<label htmlFor="owner">Token Account Owner:</label>
+					<input
+						id="owner"
+						type="text"
+						placeholder="Enter the PublicKey of the Token Account Owner"
+						required
+					/>
+				</div>
+				<div>
+					<button type="submit">Create Token Account</button>
+				</div>
+				<p>{sigAndTokenAccount()}</p>
+			</form>
+		</Modal>
 	);
 };
 
