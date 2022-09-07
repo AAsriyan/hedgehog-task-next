@@ -1,4 +1,9 @@
-import { Transaction } from "@solana/web3.js";
+import { Transaction, PublicKey } from "@solana/web3.js";
+import {
+	getAssociatedTokenAddress,
+	createAssociatedTokenAccountInstruction,
+	createTransferInstruction
+} from "@solana/spl-token";
 
 export const signAndSendRawTransaction = async (
 	connection,
@@ -22,4 +27,54 @@ export const signAndSendRawTransaction = async (
 		skipPreflight: false,
 		preflightCommitment: "single"
 	});
+};
+
+export const getOrCreateAssociatedTokenAccountIds = async (
+	connection,
+	payerKey,
+	ownerKey,
+	mintKey
+) => {
+	const associatedAddress = await getAssociatedTokenAddress(mintKey, ownerKey);
+	console.log("associated address", associatedAddress);
+	const accountInfo = await connection.getAccountInfo(associatedAddress);
+	if (accountInfo !== null) {
+		return { associatedAddress, instruction: null };
+	}
+	const createAssociatedAccountIx = createAssociatedTokenAccountInstruction(
+		payerKey,
+		associatedAddress,
+		ownerKey,
+		mintKey
+	);
+	return { associatedAddress, instruction: createAssociatedAccountIx };
+};
+
+export const sendTokens = async (
+	connection,
+	wallet,
+	sourceAddress,
+	receiverAddress,
+	mintAddress,
+	amount
+) => {
+	const { associatedAddress, instruction: instructionAccount } =
+		await getOrCreateAssociatedTokenAccountIds(
+			connection,
+			wallet.publicKey,
+			new PublicKey(receiverAddress),
+			new PublicKey(mintAddress)
+		);
+	if (instructionAccount) {
+		await signAndSendRawTransaction(connection, wallet, [instructionAccount]);
+	}
+
+	const instructionSend = createTransferInstruction(
+		new PublicKey(sourceAddress),
+		new PublicKey(associatedAddress),
+		wallet.publicKey,
+		Number(amount)
+	);
+
+	return await signAndSendRawTransaction(connection, wallet, [instructionSend]);
 };

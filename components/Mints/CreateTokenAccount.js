@@ -9,9 +9,9 @@ import {
 	ASSOCIATED_TOKEN_PROGRAM_ID,
 	createAssociatedTokenAccountInstruction
 } from "@solana/spl-token";
-import Modal from "../UI/Modal";
+import Modal from "../../UI/Modal";
 
-import styles from "../styles/Home.module.css";
+import styles from "../../styles/Home.module.css";
 
 const CreateTokenAccount = (props) => {
 	const [sig, setSig] = useState("");

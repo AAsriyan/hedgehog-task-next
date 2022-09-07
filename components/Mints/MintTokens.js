@@ -1,17 +1,13 @@
-import {
-	useConnection,
-	useWallet,
-	useAnchorWallet
-} from "@solana/wallet-adapter-react";
+import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 import * as web3 from "@solana/web3.js";
 import { createMintToInstruction } from "@solana/spl-token";
 
-import Modal from "../UI/Modal";
-import { signAndSendRawTransaction } from "../utils/helpers";
+import Modal from "../../UI/Modal";
+import { signAndSendRawTransaction } from "../../utils/helpers";
 
-import styles from "../styles/Home.module.css";
+import styles from "../../styles/Home.module.css";
 
-export const MintTokens = (props) => {
+const MintTokens = (props) => {
 	const { connection } = useConnection();
 	const wallet = useAnchorWallet();
 
@@ -86,3 +82,5 @@ export const MintTokens = (props) => {
 		</Modal>
 	);
 };
+
+export default MintTokens;

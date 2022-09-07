@@ -6,7 +6,12 @@ const SendAndReceive = (props) => {
 			<button className={styles["button-main"]} onClick={props.toggle}>
 				Send
 			</button>
-			<button className={styles["button-main"]}>Receive</button>
+			<button
+				className={styles["button-main"]}
+				onClick={() => props.copyText(props.userWalletKey)}
+			>
+				Receive
+			</button>
 		</div>
 	);
 };

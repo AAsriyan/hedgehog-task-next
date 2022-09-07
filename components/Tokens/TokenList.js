@@ -1,15 +1,14 @@
-import { AccountLayout, TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import * as web3 from "@solana/web3.js";
 import { useEffect, useState } from "react";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
-import Card from "../UI/Card";
+import Card from "../../UI/Card";
 import Token from "./Token";
 
-const TokenList = () => {
+const TokenList = (props) => {
 	const [tokenList, setTokenList] = useState([]);
 	const { connection } = useConnection();
-	const { publicKey, sendTransaction } = useWallet();
+	const { publicKey } = useWallet();
 
 	useEffect(() => {
 		const getTokenList = async () => {
@@ -29,7 +28,15 @@ const TokenList = () => {
 	return (
 		<Card>
 			{tokenList.map((token) => {
-				return <Token key={token.pubkey.toBase58()} tokenInfo={token} />;
+				return (
+					<Token
+						key={token.pubkey.toBase58()}
+						tokenInfo={token}
+						copyText={props.copyText}
+						toggle={props.toggle}
+						onClose={props.onClose}
+					/>
+				);
 			})}
 		</Card>
 	);

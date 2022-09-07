@@ -1,21 +1,16 @@
-import { useState } from "react";
-import Modal from "../UI/Modal";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import * as web3 from "@solana/web3.js";
 
-import styles from "../styles/Home.module.css";
+import Modal from "../../UI/Modal";
+import styles from "../../styles/Home.module.css";
 
 const SendSol = (props) => {
-	const [sig, setSig] = useState("");
 	const { connection } = useConnection();
 	const { publicKey, sendTransaction } = useWallet();
-	console.log(sig, "this is the sig");
 
 	const sendSolToken = async (e) => {
 		e.preventDefault();
 		if (!connection || !publicKey) {
-			// remember to put in better user feedback here
 			return;
 		}
 		const transaction = new web3.Transaction();
@@ -24,17 +19,15 @@ const SendSol = (props) => {
 		const sendSolInstruction = web3.SystemProgram.transfer({
 			fromPubkey: publicKey,
 			toPubkey: recipientPubkey,
-			lamports: LAMPORTS_PER_SOL * e.target.amount.value
+			lamports: web3.LAMPORTS_PER_SOL * e.target.amount.value
 		});
 
 		transaction.add(sendSolInstruction);
 		// using set timeout just to make sure the transaction went out before updating the balance.
-		const signature = await sendTransaction(transaction, connection);
+		await sendTransaction(transaction, connection);
 
 		setTimeout(() => {
-			setSig(signature);
 			props.refresh();
-			//props.onClose();
 		}, 1000);
 	};
 
