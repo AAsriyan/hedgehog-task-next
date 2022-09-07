@@ -20,20 +20,7 @@ const TokenList = () => {
 				}
 			);
 
-			console.log(
-				"Token                                                      Balance"
-			);
-			console.log(
-				"-----------------------------------------------------------------------"
-			);
-			console.log(tokenAccounts.value);
 			setTokenList(tokenAccounts.value);
-			tokenAccounts.value.forEach((tokenAccount) => {
-				const accountData = AccountLayout.decode(tokenAccount.account.data);
-				console.log(
-					`${new web3.PublicKey(accountData.mint)} ${accountData.amount}`
-				);
-			});
 		};
 
 		getTokenList();

@@ -2,7 +2,7 @@ import { AccountLayout } from "@solana/spl-token";
 
 const Token = (props) => {
 	const accountData = AccountLayout.decode(props.tokenInfo.account.data);
-	console.log(accountData.amount);
+
 	return (
 		<div>
 			<div>Token: {accountData.amount.toString()}</div>

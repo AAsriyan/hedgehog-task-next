@@ -64,13 +64,21 @@ const Home = () => {
 			{isCreatingTokenAccount && (
 				<CreateTokenAccount onClose={toggleCreatingAccountHandler} />
 			)}
-			<div>
-				<button onClick={toggleCreatingAccountHandler}>
+			<div className={styles["label-fields"]}>
+				<button
+					className={styles["button-main"]}
+					onClick={toggleCreatingAccountHandler}
+				>
 					Create Token Account
 				</button>
 			</div>
-			<div>
-				<button onClick={toggleMintingHandler}>Mint Token</button>
+			<div className={styles["label-fields"]}>
+				<button
+					className={styles["button-main"]}
+					onClick={toggleMintingHandler}
+				>
+					Mint Token
+				</button>
 			</div>
 			{isMinting && <MintTokens onClose={toggleMintingHandler} />}
 			<ShowBalance balance={balance} />

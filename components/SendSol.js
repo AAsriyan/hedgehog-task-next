@@ -4,6 +4,8 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import * as web3 from "@solana/web3.js";
 
+import styles from "../styles/Home.module.css";
+
 const SendSol = (props) => {
 	const [sig, setSig] = useState("");
 	const { connection } = useConnection();
@@ -39,17 +41,35 @@ const SendSol = (props) => {
 	return (
 		<Modal onClose={props.onClose}>
 			<form onSubmit={sendToken}>
-				<label htmlFor="amount">Amount to send:</label>
-				<input id="amount" type="text" placeholder="e.g. 0.1" required />
-				<br />
-				<label htmlFor={"recipient"}>Send SOL to:</label>
-				<input
-					id="recipient"
-					type="text"
-					placeholder="e.g. 4Zw1fXuYuJhWhu9KLEYMhiPEiqcpKd6akw3WRZCv84HA"
-					required
-				/>
-				<button type="submit">Send</button>
+				<div className={styles.label}>
+					<label className={styles["label-fields"]} htmlFor="amount">
+						Amount to send:
+					</label>
+					<input
+						id="amount"
+						type="text"
+						className={styles.input}
+						placeholder="e.g. 0.1"
+						required
+					/>
+				</div>
+				<div className={styles.label}>
+					<label className={styles["label-fields"]} htmlFor={"recipient"}>
+						Send SOL to:
+					</label>
+					<input
+						id="recipient"
+						type="text"
+						className={styles.input}
+						placeholder="e.g. 4Zw1fXuYuJhWhu9KLEYMhiPEiqcpKd6akw3WRZCv84HA"
+						required
+					/>
+				</div>
+				<div>
+					<button className={styles["button-confirm"]} type="submit">
+						Send
+					</button>
+				</div>
 			</form>
 		</Modal>
 	);

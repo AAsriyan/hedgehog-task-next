@@ -1,8 +1,12 @@
+import styles from "../styles/Home.module.css";
+
 const SendAndReceive = (props) => {
 	return (
 		<div>
-			<button onClick={props.toggle}>Send</button>
-			<button>Receive</button>
+			<button className={styles["button-main"]} onClick={props.toggle}>
+				Send
+			</button>
+			<button className={styles["button-main"]}>Receive</button>
 		</div>
 	);
 };

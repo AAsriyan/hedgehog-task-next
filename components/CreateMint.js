@@ -8,6 +8,8 @@ import {
 } from "@solana/spl-token";
 import * as web3 from "@solana/web3.js";
 
+import styles from "../styles/Home.module.css";
+
 const CreateMint = () => {
 	const [sig, setSig] = useState("");
 	const [mint, setMint] = useState("");
@@ -54,9 +56,11 @@ const CreateMint = () => {
 	};
 
 	return (
-		<div>
+		<div className={styles["label-fields"]}>
 			<form onSubmit={createMintHandler}>
-				<button type="submit">Create Mint</button>
+				<button className={styles["button-main"]} type="submit">
+					Create Mint
+				</button>
 			</form>
 		</div>
 	);

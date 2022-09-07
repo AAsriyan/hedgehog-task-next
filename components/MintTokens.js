@@ -6,15 +6,19 @@ import {
 	TOKEN_PROGRAM_ID,
 	ASSOCIATED_TOKEN_PROGRAM_ID,
 	createMintToInstruction,
-	getAccount
+	getAccount,
+	mintTo,
+	getMint
 } from "@solana/spl-token";
 
 import Modal from "../UI/Modal";
 
+import styles from "../styles/Home.module.css";
+
 export const MintTokens = (props) => {
-	const [sig, setSig] = useState("");
-	const [tokenAccount, setTokenAccount] = useState("");
-	const [balance, setBalance] = useState("");
+	//const [sig, setSig] = useState("");
+	//const [tokenAccount, setTokenAccount] = useState("");
+	//const [balance, setBalance] = useState("");
 
 	const { connection } = useConnection();
 	const { publicKey, sendTransaction } = useWallet();
@@ -24,68 +28,98 @@ export const MintTokens = (props) => {
 			return;
 		}
 
-		const transaction = new web3.Transaction();
+		//const transaction = new web3.Transaction();
 
 		const mintPubKey = new web3.PublicKey(e.target.mint.value);
 		const recipientPubkey = new web3.PublicKey(e.target.recipient.value);
 		const amount = e.target.amount.value;
+		console.log(`this is the amount: ${amount}`);
 
-		const associatedToken = await getAssociatedTokenAddress(
-			mintPubKey,
-			recipientPubkey,
-			false,
-			TOKEN_PROGRAM_ID,
-			ASSOCIATED_TOKEN_PROGRAM_ID
-		);
+		try {
+			const mintTokens = await mintTo(
+				connection,
+				publicKey,
+				mintPubKey,
+				recipientPubkey,
+				mintPubKey,
+				amount
+			);
+			console.log(`mintTokens function returned: ${mintTokens}`);
+			const mintInfo = await getMint(connection, mintPubKey);
+			console.log(`the new mint supply: ${mintInfo.supply}`);
 
-		console.log("hit after associatedtoken call", associatedToken);
+			// const associatedToken = await getAssociatedTokenAddress(
+			// 	mintPubKey,
+			// 	recipientPubkey,
+			// 	false,
+			// 	TOKEN_PROGRAM_ID,
+			// 	ASSOCIATED_TOKEN_PROGRAM_ID
+			// );
 
-		console.log(mintPubKey, associatedToken, publicKey, amount);
-		transaction.add(
-			createMintToInstruction(mintPubKey, associatedToken, publicKey, amount)
-		);
+			// console.log("hit after associatedtoken call", associatedToken);
 
-		const signature = await sendTransaction(transaction, connection);
-		console.log("hit after sig call");
+			// transaction.add(
+			// 	createMintToInstruction(mintPubKey, associatedToken, publicKey, amount)
+			// );
 
-		setSig(signature);
-		setTokenAccount(associatedToken.toBase58());
+			// console.log("hit after createminttoinstruction");
 
-		const account = await getAccount(connection, associatedToken);
-		console.log(account.amount.toBase58());
-		console.log("hit after account call");
-		setBalance(account.amount.toBase58());
-		console.log(sig.toBase58());
-		console.log(`this is the account amount ${account.amount.toBase58()}`);
+			// const signature = await sendTransaction(transaction, connection);
+
+			// setSig(signature);
+			// setTokenAccount(associatedToken.toBase58());
+
+			// const account = await getAccount(connection, associatedToken);
+
+			// setBalance(account.amount.toBase58());
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (
 		<Modal onClose={props.onClose}>
 			<form onSubmit={mintTokenHandler}>
-				<div>
-					<label htmlFor="mint">Token Mint:</label>
+				<div className={styles.label}>
+					<label htmlFor="mint" className={styles["label-fields"]}>
+						Token Mint:
+					</label>
 					<input
 						id="mint"
 						type="text"
+						className={styles.input}
 						placeholder="Enter Token Mint"
 						required
 					/>
 				</div>
-				<div>
-					<label htmlFor="recipient">Recipient:</label>
+				<div className={styles.label}>
+					<label htmlFor="recipient" className={styles["label-fields"]}>
+						Recipient:
+					</label>
 					<input
 						id="recipient"
 						type="text"
+						className={styles.input}
 						placeholder="Enter Recipient PublicKey"
 						required
 					/>
 				</div>
-				<div>
-					<label htmlFor="amount">Amount of Tokens to Mint:</label>
-					<input id="amount" type="text" placeholder="e.g. 100" required />
+				<div className={styles.label}>
+					<label htmlFor="amount" className={styles["label-fields"]}>
+						Amount of Tokens to Mint:
+					</label>
+					<input
+						id="amount"
+						type="number"
+						className={styles.input}
+						placeholder="e.g. 100"
+						required
+					/>
 				</div>
 				<div>
-					<button>Mint Tokens</button>
+					<button className={styles["button-confirm"]} type="submit">
+						Mint Tokens
+					</button>
 				</div>
 			</form>
 		</Modal>

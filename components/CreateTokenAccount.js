@@ -11,6 +11,8 @@ import {
 } from "@solana/spl-token";
 import Modal from "../UI/Modal";
 
+import styles from "../styles/Home.module.css";
+
 const CreateTokenAccount = (props) => {
 	const [sig, setSig] = useState("");
 	const [tokenAccount, setTokenAccount] = useState("");
@@ -61,21 +63,34 @@ const CreateTokenAccount = (props) => {
 	return (
 		<Modal onClose={props.onClose}>
 			<form onSubmit={createTokenAccountHandler}>
-				<div>
-					<label htmlFor="mint">Token Mint:</label>
-					<input id="mint" type="text" placeholder="Enter Token Mint" />
+				<div className={styles.label}>
+					<label className={styles["label-fields"]} htmlFor="mint">
+						Token Mint:
+					</label>
+					<input
+						id="mint"
+						type="text"
+						className={styles.input}
+						placeholder="Enter Token Mint"
+						required
+					/>
 				</div>
-				<div>
-					<label htmlFor="owner">Token Account Owner:</label>
+				<div className={styles.label}>
+					<label className={styles["label-fields"]} htmlFor="owner">
+						Token Account Owner:
+					</label>
 					<input
 						id="owner"
 						type="text"
+						className={styles.input}
 						placeholder="Enter the PublicKey of the Token Account Owner"
 						required
 					/>
 				</div>
 				<div>
-					<button type="submit">Create Token Account</button>
+					<button className={styles["button-confirm"]} type="submit">
+						Create Token Account
+					</button>
 				</div>
 				<p>{sigAndTokenAccount()}</p>
 			</form>
