@@ -1,43 +1,49 @@
 import { Fragment, useEffect, useState } from "react";
-
-import Head from "next/head";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import Head from "next/head";
+
 import NavBar from "../components/NavBar";
+import ShowBalance from "../components/ShowBalance";
+import SendAndReceive from "../components/SendAndReceive";
+import CreateMint from "../components/Mints/CreateMint";
+import MintTokens from "../components/Mints/MintTokens";
+import CreateTokenAccount from "../components/Mints/CreateTokenAccount";
+import SendSol from "../components/Tokens/SendSol";
+import TokenList from "../components/Tokens/TokenList";
 import Card from "../UI/Card";
 
 import styles from "../styles/Home.module.css";
-import ShowBalance from "../components/ShowBalance";
-import SendAndReceive from "../components/SendAndReceive";
-import SendSol from "../components/SendSol";
-import CreateMint from "../components/CreateMint";
-import CreateTokenAccount from "../components/CreateTokenAccount";
-import { MintTokens } from "../components/MintTokens";
-import TokenList from "../components/TokenList";
 
 const Home = () => {
-	const [isSending, setIsSending] = useState(false);
+	const [isSendingSol, setIsSendingSol] = useState(false);
+	const [isSendingTokens, setIsSendingTokens] = useState(false);
 	const [isMinting, setIsMinting] = useState(false);
 	const [isCreatingTokenAccount, setIsCreatingTokenAccount] = useState(false);
 	const [isRefresh, setIsRefresh] = useState(false);
 	const [balance, setBalance] = useState(0);
+	const [userPublicKey, setUserPublicKey] = useState("");
 
 	const { connection } = useConnection();
 	const { publicKey } = useWallet();
 
 	useEffect(() => {
 		if (!connection || !publicKey) {
-			// better error handling here
 			return;
 		}
+		setUserPublicKey(publicKey.toBase58());
 
 		connection.getAccountInfo(publicKey).then((info) => {
-			setBalance(info.lamports);
+			setBalance(info?.lamports ?? 0);
 		});
 	}, [connection, publicKey, isRefresh]);
 
 	const toggleSendHandler = () => {
-		setIsSending((prevSendingState) => !prevSendingState);
+		setIsSendingSol((prevSendingState) => !prevSendingState);
+	};
+
+	const toggleSendTokensHandler = () => {
+		setIsSendingTokens((prevSendingState) => !prevSendingState);
 	};
 
 	const toggleMintingHandler = () => {
@@ -48,6 +54,10 @@ const Home = () => {
 		setIsCreatingTokenAccount(
 			(prevCreatingTokenAccountState) => !prevCreatingTokenAccountState
 		);
+	};
+
+	const copyTextHandler = async (copiedText) => {
+		await navigator.clipboard.writeText(copiedText);
 	};
 
 	const walletNotConnected = (
@@ -64,24 +74,41 @@ const Home = () => {
 			{isCreatingTokenAccount && (
 				<CreateTokenAccount onClose={toggleCreatingAccountHandler} />
 			)}
-			<div>
-				<button onClick={toggleCreatingAccountHandler}>
+			<div className={styles["label-fields"]}>
+				<button
+					className={styles["button-main"]}
+					onClick={toggleCreatingAccountHandler}
+				>
 					Create Token Account
 				</button>
 			</div>
-			<div>
-				<button onClick={toggleMintingHandler}>Mint Token</button>
+			<div className={styles["label-fields"]}>
+				<button
+					className={styles["button-main"]}
+					onClick={toggleMintingHandler}
+				>
+					Mint Token
+				</button>
 			</div>
 			{isMinting && <MintTokens onClose={toggleMintingHandler} />}
 			<ShowBalance balance={balance} />
-			<SendAndReceive toggle={toggleSendHandler} />
-			{isSending && (
+			<SendAndReceive
+				userWalletKey={userPublicKey}
+				copyText={copyTextHandler}
+				toggle={toggleSendHandler}
+			/>
+			{isSendingSol && (
 				<SendSol
 					onClose={toggleSendHandler}
 					refresh={() => setIsRefresh((prevState) => !prevState)}
 				/>
 			)}
-			<TokenList />
+			<TokenList
+				toggle={toggleSendTokensHandler}
+				isSendingTokens={isSendingTokens}
+				copyText={copyTextHandler}
+				onClose={toggleSendTokensHandler}
+			/>
 		</Fragment>
 	);
 	return (
