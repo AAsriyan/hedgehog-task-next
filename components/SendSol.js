@@ -12,7 +12,7 @@ const SendSol = (props) => {
 	const { publicKey, sendTransaction } = useWallet();
 	console.log(sig, "this is the sig");
 
-	const sendToken = async (e) => {
+	const sendSolToken = async (e) => {
 		e.preventDefault();
 		if (!connection || !publicKey) {
 			// remember to put in better user feedback here
@@ -40,7 +40,7 @@ const SendSol = (props) => {
 
 	return (
 		<Modal onClose={props.onClose}>
-			<form onSubmit={sendToken}>
+			<form onSubmit={sendSolToken}>
 				<div className={styles.label}>
 					<label className={styles["label-fields"]} htmlFor="amount">
 						Amount to send:

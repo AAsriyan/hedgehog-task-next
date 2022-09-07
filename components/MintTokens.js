@@ -1,77 +1,38 @@
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { useState } from "react";
-import * as web3 from "@solana/web3.js";
 import {
-	getAssociatedTokenAddress,
-	TOKEN_PROGRAM_ID,
-	ASSOCIATED_TOKEN_PROGRAM_ID,
-	createMintToInstruction,
-	getAccount,
-	mintTo,
-	getMint
-} from "@solana/spl-token";
+	useConnection,
+	useWallet,
+	useAnchorWallet
+} from "@solana/wallet-adapter-react";
+import * as web3 from "@solana/web3.js";
+import { createMintToInstruction } from "@solana/spl-token";
 
 import Modal from "../UI/Modal";
+import { signAndSendRawTransaction } from "../utils/helpers";
 
 import styles from "../styles/Home.module.css";
 
 export const MintTokens = (props) => {
-	//const [sig, setSig] = useState("");
-	//const [tokenAccount, setTokenAccount] = useState("");
-	//const [balance, setBalance] = useState("");
-
 	const { connection } = useConnection();
-	const { publicKey, sendTransaction } = useWallet();
+	const wallet = useAnchorWallet();
 
 	const mintTokenHandler = async (e) => {
-		if (!connection || !publicKey) {
+		e.preventDefault();
+		if (!connection || !wallet) {
 			return;
 		}
-
-		//const transaction = new web3.Transaction();
 
 		const mintPubKey = new web3.PublicKey(e.target.mint.value);
 		const recipientPubkey = new web3.PublicKey(e.target.recipient.value);
 		const amount = e.target.amount.value;
-		console.log(`this is the amount: ${amount}`);
 
 		try {
-			const mintTokens = await mintTo(
-				connection,
-				publicKey,
+			const instruction = createMintToInstruction(
 				mintPubKey,
 				recipientPubkey,
-				mintPubKey,
+				wallet.publicKey,
 				amount
 			);
-			console.log(`mintTokens function returned: ${mintTokens}`);
-			const mintInfo = await getMint(connection, mintPubKey);
-			console.log(`the new mint supply: ${mintInfo.supply}`);
-
-			// const associatedToken = await getAssociatedTokenAddress(
-			// 	mintPubKey,
-			// 	recipientPubkey,
-			// 	false,
-			// 	TOKEN_PROGRAM_ID,
-			// 	ASSOCIATED_TOKEN_PROGRAM_ID
-			// );
-
-			// console.log("hit after associatedtoken call", associatedToken);
-
-			// transaction.add(
-			// 	createMintToInstruction(mintPubKey, associatedToken, publicKey, amount)
-			// );
-
-			// console.log("hit after createminttoinstruction");
-
-			// const signature = await sendTransaction(transaction, connection);
-
-			// setSig(signature);
-			// setTokenAccount(associatedToken.toBase58());
-
-			// const account = await getAccount(connection, associatedToken);
-
-			// setBalance(account.amount.toBase58());
+			await signAndSendRawTransaction(connection, wallet, [instruction]);
 		} catch (error) {
 			console.log(error);
 		}
